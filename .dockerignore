@@ -1,0 +1,17 @@
+node_modules
+.env
+*.log
+dist/
+.git
+attached_assets/
+.replit
+replit.nix
+.gitignore
+README_old.md
+.next/
+.vscode/
+.DS_Store
+coverage/
+.nyc_output/
+tmp/
+temp/

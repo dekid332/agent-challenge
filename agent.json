@@ -1,0 +1,114 @@
+{
+  "name": "PEGG WATCH",
+  "description": "Meme-powered AI agents that monitor stablecoins, track whales, post daily digests, and preserve crypto's most tragic rug stories",
+  "version": "1.0.0",
+  "author": "PEGG WATCH Team",
+  "license": "MIT",
+  "repository": "https://github.com/nosana-ci/peggwatch",
+  "docker": {
+    "image": "nosanaagent/peggwatch:latest",
+    "tag": "latest",
+    "platform": "linux/amd64"
+  },
+  "agents": [
+    {
+      "name": "Depeg Detector Agent",
+      "description": "Monitors USDC, USDT, DAI, FRAX using CoinGecko API and triggers alerts when price deviates from $1",
+      "type": "monitoring",
+      "interval": "30s",
+      "endpoints": ["/api/stablecoins", "/api/alerts"],
+      "features": ["price-monitoring", "depeg-detection", "meme-quotes"]
+    },
+    {
+      "name": "Depeg Digest Agent", 
+      "description": "Compiles daily stablecoin recap with performance metrics and distributes via bots",
+      "type": "reporting",
+      "interval": "24h",
+      "endpoints": ["/api/digest", "/api/agents/run-digest"],
+      "features": ["daily-reports", "performance-analysis", "multi-channel-distribution"]
+    },
+    {
+      "name": "Whale Trail Agent",
+      "description": "Tracks known whale wallets and sends alerts for large stablecoin movements",
+      "type": "tracking", 
+      "interval": "5m",
+      "endpoints": ["/api/whales", "/api/whales/transactions"],
+      "features": ["wallet-tracking", "transaction-analysis", "whale-alerts"]
+    },
+    {
+      "name": "Rug Museum Agent",
+      "description": "Maintains historical database of failed stablecoins with meme-based storytelling",
+      "type": "archival",
+      "interval": "static",
+      "endpoints": ["/api/rugs"],
+      "features": ["historical-data", "search", "meme-storytelling"]
+    }
+  ],
+  "integrations": {
+    "apis": [
+      {
+        "name": "CoinGecko",
+        "purpose": "Stablecoin price data",
+        "auth": "none"
+      },
+      {
+        "name": "Etherscan", 
+        "purpose": "Ethereum whale wallet tracking",
+        "auth": "api_key"
+      }
+    ],
+    "bots": [
+      {
+        "platform": "Telegram",
+        "commands": ["/track", "/rug", "/digest", "/subscribe"],
+        "auth": "bot_token"
+      },
+      {
+        "platform": "Discord",
+        "commands": ["slash commands"],
+        "auth": "bot_token"
+      },
+      {
+        "platform": "Twitter/X",
+        "purpose": "Daily digests and critical alerts",
+        "auth": "api_keys"
+      }
+    ]
+  },
+  "deployment": {
+    "platform": "Nosana",
+    "requirements": {
+      "cpu": "1 core",
+      "memory": "512MB", 
+      "storage": "1GB",
+      "network": "internet"
+    },
+    "environment": {
+      "NODE_ENV": "production",
+      "PORT": "5000"
+    },
+    "health_check": "/api/health",
+    "startup_time": "30s"
+  },
+  "features": [
+    "real-time-stablecoin-monitoring",
+    "whale-wallet-tracking", 
+    "daily-digest-generation",
+    "multi-platform-bot-integration",
+    "web-dashboard",
+    "rug-museum-archive",
+    "meme-powered-alerts",
+    "websocket-real-time-updates"
+  ],
+  "mascot": {
+    "name": "Pegg",
+    "emoji": "🐸",
+    "personality": "Vigilant frog watching the stablecoin multiverse",
+    "quotes": [
+      "Pegg is screaming...",
+      "This is not financial advice, but RUN!",
+      "Pegg has seen this before...",
+      "The peg is broken, just like my heart"
+    ]
+  }
+}

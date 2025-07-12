@@ -1,0 +1,274 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+
+/* Custom glow effects for heatmap */
+.glow-text {
+  text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+}
+
+.network-card {
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.network-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+}
+
+.network-pulse {
+  animation: networkPulse 2s infinite;
+}
+
+@keyframes networkPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.intensity-bar {
+  animation: intensityGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes intensityGlow {
+  from { box-shadow: 0 0 5px currentColor; }
+  to { box-shadow: 0 0 15px currentColor, 0 0 25px currentColor; }
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(240, 10%, 3.9%);
+  --muted: hsl(240, 4.8%, 95.9%);
+  --muted-foreground: hsl(240, 3.8%, 46.1%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(240, 10%, 3.9%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(240, 10%, 3.9%);
+  --border: hsl(240, 5.9%, 90%);
+  --input: hsl(240, 5.9%, 90%);
+  --primary: hsl(152, 100%, 50%);
+  --primary-foreground: hsl(240, 10%, 3.9%);
+  --secondary: hsl(240, 4.8%, 95.9%);
+  --secondary-foreground: hsl(240, 5.9%, 10%);
+  --accent: hsl(240, 4.8%, 95.9%);
+  --accent-foreground: hsl(240, 5.9%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(152, 100%, 50%);
+  --primary-foreground: hsl(240, 10%, 3.9%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  
+  /* Custom PEGG WATCH colors */
+  --neon-green: hsl(152, 100%, 50%);
+  --neon-pink: hsl(320, 100%, 50%);
+  --neon-cyan: hsl(180, 100%, 50%);
+  --neon-purple: hsl(260, 100%, 70%);
+  --space-dark: hsl(240, 10%, 3.9%);
+  --space-slate: hsl(240, 20%, 18%);
+  --glass-white: hsla(0, 0%, 100%, 0.05);
+  --glass-green: hsla(152, 100%, 50%, 0.1);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(152, 100%, 50%);
+  --primary-foreground: hsl(240, 10%, 3.9%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    background: linear-gradient(135deg, var(--space-dark) 0%, var(--space-slate) 100%);
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .font-display {
+    font-family: 'Orbitron', sans-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-xl border;
+    background: var(--glass-white);
+    border-color: hsla(152, 100%, 50%, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card:hover {
+    border-color: hsla(152, 100%, 50%, 0.5);
+    box-shadow: 0 0 30px hsla(152, 100%, 50%, 0.2);
+  }
+
+  .neon-text {
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  .terminal-bg {
+    background: linear-gradient(45deg, hsla(0, 0%, 0%, 0.8), hsla(240, 20%, 18%, 0.8));
+    border: 1px solid hsla(152, 100%, 50%, 0.3);
+  }
+
+  .pegg-mascot {
+    filter: drop-shadow(0 0 10px var(--neon-green));
+    transition: all 0.3s ease;
+  }
+
+  .pegg-mascot:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px var(--neon-green));
+  }
+
+  .nav-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsla(152, 100%, 50%, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .nav-glow:hover::before {
+    left: 100%;
+  }
+
+  .price-card {
+    background: linear-gradient(145deg, var(--glass-green), hsla(180, 100%, 50%, 0.1));
+    border: 1px solid hsla(152, 100%, 50%, 0.3);
+    backdrop-filter: blur(15px);
+  }
+
+  .alert-item {
+    border-left: 3px solid;
+    animation: terminal 0.5s ease-in-out;
+  }
+
+  .whale-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsla(152, 100%, 50%, 0.5) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsla(152, 100%, 50%, 0.5);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsla(152, 100%, 50%, 0.8);
+  }
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-terminal {
+    animation: terminal 0.5s ease-in-out;
+  }
+
+  @keyframes glow {
+    from { 
+      box-shadow: 0 0 20px hsla(152, 100%, 50%, 0.3);
+    }
+    to { 
+      box-shadow: 0 0 40px hsla(152, 100%, 50%, 0.6);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { 
+      transform: translateY(0px);
+    }
+    50% { 
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes terminal {
+    from { 
+      opacity: 0; 
+      transform: translateY(10px);
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0);
+    }
+  }
+}

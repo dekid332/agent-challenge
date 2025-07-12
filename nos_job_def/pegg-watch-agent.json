@@ -1,0 +1,43 @@
+{
+  "version": "0.1.0",
+  "type": "container",
+  "meta": {
+    "trigger": {
+      "event": "github:push"
+    },
+    "resources": {
+      "cpu": 2,
+      "memory": 4096,
+      "gpu": 0
+    }
+  },
+  "ops": [
+    {
+      "type": "container/run",
+      "id": "pegg-watch",
+      "args": {
+        "image": "nosanaagent/peggwatch:latest",
+        "platform": "linux/amd64",
+        "pull": "always",
+        "expose": [5000],
+        "environment": [
+          "NODE_ENV=production",
+          "PORT=5000",
+          "API_BASE_URL=${API_BASE_URL}",
+          "MODEL_NAME_AT_ENDPOINT=${MODEL_NAME_AT_ENDPOINT}",
+          "OPENAI_API_KEY=${OPENAI_API_KEY}",
+          "COINGECKO_API_KEY=${COINGECKO_API_KEY}",
+          "ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}",
+          "DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}",
+          "DISCORD_APP_ID=${DISCORD_APP_ID}",
+          "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}",
+          "X_API_KEY=${X_API_KEY}",
+          "X_API_SECRET=${X_API_SECRET}",
+          "X_ACCESS_TOKEN=${X_ACCESS_TOKEN}",
+          "X_ACCESS_SECRET=${X_ACCESS_SECRET}",
+          "DATABASE_URL=${DATABASE_URL}"
+        ]
+      }
+    }
+  ]
+}

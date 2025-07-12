@@ -1,0 +1,28 @@
+tasks:
+  - init: |
+      npm install
+      cp .env.example .env
+      echo "🚀 PEGG WATCH setup complete!"
+      echo "📝 Please configure your .env file with API keys"
+      echo "🔗 Database: Set up PostgreSQL and add DATABASE_URL"
+      echo "🤖 Bots: Add TELEGRAM_BOT_TOKEN and DISCORD_BOT_TOKEN"
+      echo "🔑 AI: Add OPENAI_API_KEY for agent functionality"
+    command: npm run dev
+ports:
+  - port: 5000
+    onOpen: open-preview
+    name: PEGG WATCH Dashboard
+    description: Main application dashboard
+  - port: 6969
+    onOpen: notify
+    name: Mastra Dev Environment
+    description: Mastra agent development environment
+github:
+  prebuilds:
+    branches: true
+    pullRequestsFromForks: true
+vscode:
+  extensions:
+    - esbenp.prettier-vscode
+    - ms-vscode.vscode-typescript-next
+    - bradlc.vscode-tailwindcss
