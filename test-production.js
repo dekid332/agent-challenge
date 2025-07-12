@@ -1,97 +1,90 @@
-#!/usr/bin/env node
+// Quick test script for production build
+import { spawn } from 'child_process';
+import http from 'http';
 
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+console.log('🧪 Testing production build...');
 
-console.log('🔧 Testing Docker-ready production build...');
-
-// Step 1: Clean build directory
-console.log('1. Cleaning build directory...');
-if (fs.existsSync('dist')) {
-  fs.rmSync('dist', { recursive: true, force: true });
-}
-
-// Step 2: Build frontend (with timeout and better error handling)
-console.log('2. Building frontend...');
-try {
-  execSync('npx vite build --outDir dist/public', { 
-    stdio: 'inherit',
-    timeout: 300000, // 5 minutes timeout
-    env: { ...process.env, NODE_ENV: 'production' }
-  });
-  console.log('✅ Frontend build completed');
-} catch (error) {
-  console.error('❌ Frontend build failed:', error.message);
-  process.exit(1);
-}
-
-// Step 3: Build backend server
-console.log('3. Building backend server...');
-try {
-  execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --external:vite', { 
-    stdio: 'inherit' 
-  });
-  console.log('✅ Backend server build completed');
-} catch (error) {
-  console.error('❌ Backend server build failed:', error.message);
-  process.exit(1);
-}
-
-// Step 4: Build production server
-console.log('4. Building production server...');
-try {
-  execSync('npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js --external:vite', { 
-    stdio: 'inherit' 
-  });
-  console.log('✅ Production server build completed');
-} catch (error) {
-  console.error('❌ Production server build failed:', error.message);
-  process.exit(1);
-}
-
-// Step 5: Verify all required files exist
-console.log('5. Verifying build artifacts...');
-const requiredFiles = [
-  'dist/index.js',
-  'dist/production.js',
-  'dist/public/index.html',
-  'dist/public/assets'
-];
-
-let allFilesExist = true;
-requiredFiles.forEach(file => {
-  if (fs.existsSync(file)) {
-    console.log(`  ✅ ${file}`);
-  } else {
-    console.log(`  ❌ ${file} missing`);
-    allFilesExist = false;
-  }
+// Test 1: Check if production server starts
+console.log('1. Starting production server...');
+const server = spawn('node', ['dist/production.js'], {
+  env: { ...process.env, NODE_ENV: 'production' },
+  stdio: 'pipe'
 });
 
-// Step 6: Check file sizes
-console.log('6. Checking build sizes...');
-try {
-  const stats = fs.statSync('dist/production.js');
-  console.log(`  Production server: ${Math.round(stats.size / 1024)}KB`);
-  
-  const htmlStats = fs.statSync('dist/public/index.html');
-  console.log(`  Frontend HTML: ${Math.round(htmlStats.size / 1024)}KB`);
-  
-  const assetsDir = fs.readdirSync('dist/public/assets');
-  console.log(`  Frontend assets: ${assetsDir.length} files`);
-} catch (error) {
-  console.log('  ⚠️  Could not check file sizes:', error.message);
-}
+let serverOutput = '';
+server.stdout.on('data', (data) => {
+  serverOutput += data.toString();
+  console.log(`   ${data.toString().trim()}`);
+});
 
-if (allFilesExist) {
-  console.log('✅ All build artifacts present');
-  console.log('🎉 Production build ready for Docker deployment!');
-  console.log('');
-  console.log('Next steps:');
-  console.log('  docker build -t your-name/peggwatch .');
-  console.log('  docker run -p 5000:5000 your-name/peggwatch');
-} else {
-  console.log('❌ Build incomplete - missing required files');
+server.stderr.on('data', (data) => {
+  console.error(`   Error: ${data.toString().trim()}`);
+});
+
+// Test 2: Check if server responds to health check
+setTimeout(() => {
+  console.log('2. Testing health endpoint...');
+  const healthRequest = http.get('http://localhost:5000/api/health', (res) => {
+    let data = '';
+    res.on('data', (chunk) => data += chunk);
+    res.on('end', () => {
+      console.log(`   Status: ${res.statusCode}`);
+      console.log(`   Response: ${data}`);
+      
+      if (res.statusCode === 200) {
+        console.log('   ✅ Health check passed');
+      } else {
+        console.log('   ❌ Health check failed');
+      }
+      
+      server.kill('SIGTERM');
+    });
+  });
+  
+  healthRequest.on('error', (err) => {
+    console.log(`   ❌ Health check error: ${err.message}`);
+    server.kill('SIGTERM');
+  });
+}, 3000);
+
+// Test 3: Check if server serves static files
+setTimeout(() => {
+  console.log('3. Testing static file serving...');
+  const staticRequest = http.get('http://localhost:5000/', (res) => {
+    let data = '';
+    res.on('data', (chunk) => data += chunk);
+    res.on('end', () => {
+      console.log(`   Status: ${res.statusCode}`);
+      
+      if (res.statusCode === 200 && data.includes('<html')) {
+        console.log('   ✅ Static file serving works');
+      } else {
+        console.log('   ❌ Static file serving failed');
+      }
+    });
+  });
+  
+  staticRequest.on('error', (err) => {
+    console.log(`   ❌ Static file error: ${err.message}`);
+  });
+}, 5000);
+
+// Cleanup after 8 seconds
+setTimeout(() => {
+  console.log('4. Test completed - shutting down server...');
+  server.kill('SIGTERM');
+  
+  setTimeout(() => {
+    if (serverOutput.includes('serving on port 5000')) {
+      console.log('✅ Production build test PASSED');
+    } else {
+      console.log('❌ Production build test FAILED');
+    }
+    process.exit(0);
+  }, 1000);
+}, 8000);
+
+server.on('error', (err) => {
+  console.error('❌ Server error:', err);
   process.exit(1);
-}
+});

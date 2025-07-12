@@ -15,11 +15,11 @@ RUN npm ci --no-audit --no-fund
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the frontend
+RUN NODE_ENV=production npx vite build --outDir dist/public --mode production
 
-# Build the production server separately
-RUN npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js --external:vite
+# Build the production server (no Vite dependency)
+RUN npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js --external:vite --external:@replit/vite-plugin-cartographer --external:@replit/vite-plugin-runtime-error-modal --external:@vitejs/plugin-react --external:@tailwindcss/vite
 
 # Remove dev dependencies after build
 RUN npm prune --omit=dev
