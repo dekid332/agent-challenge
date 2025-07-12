@@ -9,14 +9,20 @@ RUN apk add --no-cache git curl dumb-init
 # Copy package files first for better caching
 COPY package*.json ./
 
-# Install dependencies (production only)
-RUN npm ci --omit=dev --no-audit --no-fund
+# Install ALL dependencies first (needed for build)
+RUN npm ci --no-audit --no-fund
 
 # Copy source code
 COPY . .
 
 # Build the application
 RUN npm run build
+
+# Build the production server separately
+RUN npx esbuild server/production.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/production.js --external:vite
+
+# Remove dev dependencies after build
+RUN npm prune --omit=dev
 
 # Create non-root user for security (Nosana requirement)
 RUN addgroup -g 1001 -S nodejs && \
@@ -43,5 +49,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
 # Use dumb-init for proper signal handling
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the application
-CMD ["npm", "start"]
+# Start the application (production mode)
+CMD ["node", "dist/production.js"]

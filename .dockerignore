@@ -1,7 +1,6 @@
 node_modules
 .env
 *.log
-dist/
 .git
 attached_assets/
 .replit
@@ -15,3 +14,13 @@ coverage/
 .nyc_output/
 tmp/
 temp/
+# Docker build logs and cache
+.dockerignore
+Dockerfile
+docker-compose.yml
+# Development files
+.env.local
+.env.development
+# Build artifacts (will be built in container)
+dist/
+build/
